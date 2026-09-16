@@ -11,6 +11,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import type { CategoryWithCheatsheets } from "@/content/registry";
+import { useLocale } from "@/components/locale-provider";
+import { UI_TEXT, pick } from "@/lib/i18n";
 
 export function Sidebar({
   categories,
@@ -20,6 +22,7 @@ export function Sidebar({
   onNavigate?: () => void;
 }) {
   const pathname = usePathname();
+  const { locale } = useLocale();
   const [expanded, setExpanded] = React.useState<Set<string>>(
     () => new Set(categories.map((c) => c.id)),
   );
@@ -34,7 +37,7 @@ export function Sidebar({
   }
 
   return (
-    <nav aria-label="Danh mục cheat sheet" className="flex flex-col gap-1 p-3">
+    <nav aria-label={pick(UI_TEXT.categoriesNavLabel, locale)} className="flex flex-col gap-1 p-3">
       {categories.map((category) => {
         const isExpanded = expanded.has(category.id);
         return (
@@ -45,7 +48,7 @@ export function Sidebar({
               aria-expanded={isExpanded}
               className="flex w-full items-center justify-between rounded-md px-2 py-1.5 text-left text-xs font-semibold tracking-wide text-muted-foreground uppercase hover:text-foreground"
             >
-              {category.label}
+              {pick(category.label, locale)}
               <ChevronDown
                 className={cn(
                   "size-3.5 transition-transform",
@@ -57,7 +60,7 @@ export function Sidebar({
               <ul className="mb-2 flex flex-col gap-0.5">
                 {category.cheatsheets.length === 0 && (
                   <li className="px-2 py-1 text-xs text-muted-foreground">
-                    Sắp ra mắt
+                    {pick(UI_TEXT.comingSoon, locale)}
                   </li>
                 )}
                 {category.cheatsheets.map((cheatsheet) => {
@@ -79,7 +82,7 @@ export function Sidebar({
                           >
                             {cheatsheet.title}
                           </TooltipTrigger>
-                          <TooltipContent>Sắp ra mắt</TooltipContent>
+                          <TooltipContent>{pick(UI_TEXT.comingSoon, locale)}</TooltipContent>
                         </Tooltip>
                       </li>
                     );

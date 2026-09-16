@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import Script from "next/script";
 import { spaceGrotesk, jetbrainsMono } from "@/lib/fonts";
 import { ThemeProvider } from "@/components/theme-provider";
+import { LocaleProvider } from "@/components/locale-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
 import { CommandPaletteProvider } from "@/components/command-palette-provider";
@@ -44,21 +45,23 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <Script id="theme-init" strategy="beforeInteractive">
           {THEME_INIT_SCRIPT}
         </Script>
-        <ThemeProvider>
-          <TooltipProvider delay={200}>
-            <CommandPaletteProvider>
-              <Header categories={categories} />
-              <div className="flex flex-1">
-                <aside className="hidden w-64 shrink-0 border-r border-border md:block">
-                  <Sidebar categories={categories} />
-                </aside>
-                <main className="min-w-0 flex-1">{children}</main>
-              </div>
-              <CommandPalette index={snippetIndex} />
-            </CommandPaletteProvider>
-            <Toaster />
-          </TooltipProvider>
-        </ThemeProvider>
+        <LocaleProvider>
+          <ThemeProvider>
+            <TooltipProvider delay={200}>
+              <CommandPaletteProvider>
+                <Header categories={categories} />
+                <div className="flex flex-1">
+                  <aside className="hidden w-64 shrink-0 border-r border-border md:block">
+                    <Sidebar categories={categories} />
+                  </aside>
+                  <main className="min-w-0 flex-1">{children}</main>
+                </div>
+                <CommandPalette index={snippetIndex} />
+              </CommandPaletteProvider>
+              <Toaster />
+            </TooltipProvider>
+          </ThemeProvider>
+        </LocaleProvider>
       </body>
     </html>
   );

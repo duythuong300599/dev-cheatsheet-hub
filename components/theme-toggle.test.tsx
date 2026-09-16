@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { ThemeProvider } from "@/components/theme-provider";
+import { LocaleProvider } from "@/components/locale-provider";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 beforeEach(() => {
@@ -10,9 +11,11 @@ beforeEach(() => {
 
 function renderWithProvider() {
   return render(
-    <ThemeProvider>
-      <ThemeToggle />
-    </ThemeProvider>,
+    <LocaleProvider>
+      <ThemeProvider>
+        <ThemeToggle />
+      </ThemeProvider>
+    </LocaleProvider>,
   );
 }
 

@@ -1,17 +1,24 @@
+"use client";
+
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
+import { useLocale } from "@/components/locale-provider";
+import { UI_TEXT, pick } from "@/lib/i18n";
+import type { Bilingual } from "@/content/schema";
 
 export function ComingSoonCard({
   label,
   categoryLabel,
 }: {
-  label: string;
-  categoryLabel: string;
+  label: Bilingual;
+  categoryLabel: Bilingual;
 }) {
+  const { locale } = useLocale();
+
   return (
     <Tooltip>
       <TooltipTrigger
@@ -22,13 +29,13 @@ export function ComingSoonCard({
           />
         }
       >
-        <h3 className="font-sans font-semibold">{label}</h3>
-        <p className="text-sm text-muted-foreground">Sắp ra mắt</p>
+        <h3 className="font-sans font-semibold">{pick(label, locale)}</h3>
+        <p className="text-sm text-muted-foreground">{pick(UI_TEXT.comingSoon, locale)}</p>
         <Badge variant="outline" className="mt-auto w-fit font-mono text-[10px] font-normal">
-          {categoryLabel}
+          {pick(categoryLabel, locale)}
         </Badge>
       </TooltipTrigger>
-      <TooltipContent>Cheat sheet này sắp ra mắt</TooltipContent>
+      <TooltipContent>{pick(UI_TEXT.comingSoonTooltip, locale)}</TooltipContent>
     </Tooltip>
   );
 }

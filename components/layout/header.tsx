@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { TerminalSquare } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { LanguageToggle } from "@/components/language-toggle";
 import { SearchTrigger } from "@/components/search-trigger";
 import { MobileSidebarSheet } from "@/components/layout/mobile-sidebar-sheet";
 import type { CategoryWithCheatsheets } from "@/content/registry";
@@ -15,6 +16,7 @@ export function Header({ categories }: { categories: CategoryWithCheatsheets[] }
       </Link>
       <div className="ml-auto flex items-center gap-2">
         <SearchTrigger />
+        <LanguageToggle />
         <ThemeToggle />
       </div>
     </header>

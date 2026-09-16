@@ -1,5 +1,5 @@
 import { CATEGORIES, type CategoryMeta } from "@/content/categories";
-import { CheatsheetSchema, type Cheatsheet } from "@/content/schema";
+import { CheatsheetSchema, type Cheatsheet, type Bilingual } from "@/content/schema";
 import javascript from "@/content/cheatsheets/javascript";
 import git from "@/content/cheatsheets/git";
 import css from "@/content/cheatsheets/css";
@@ -85,10 +85,10 @@ export interface FlatSnippetIndexItem {
   cheatsheetSlug: string;
   cheatsheetTitle: string;
   sectionId: string;
-  sectionTitle: string;
+  sectionTitle: Bilingual;
   snippetId: string;
-  snippetTitle: string;
-  snippetDescription?: string;
+  snippetTitle: Bilingual;
+  snippetDescription?: Bilingual;
   language: string;
 }
 

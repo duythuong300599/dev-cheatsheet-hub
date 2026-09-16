@@ -12,15 +12,18 @@ import {
   CommandItem,
 } from "@/components/ui/command";
 import { useCommandPalette } from "@/components/command-palette-provider";
+import { useLocale } from "@/components/locale-provider";
+import { UI_TEXT, pick } from "@/lib/i18n";
 import { filterSnippets, groupByCheatsheet } from "@/lib/search";
 import type { FlatSnippetIndexItem } from "@/content/registry";
 
 export function CommandPalette({ index }: { index: FlatSnippetIndexItem[] }) {
   const { open, setOpen } = useCommandPalette();
+  const { locale } = useLocale();
   const router = useRouter();
   const [query, setQuery] = React.useState("");
 
-  const filtered = React.useMemo(() => filterSnippets(query, index), [query, index]);
+  const filtered = React.useMemo(() => filterSnippets(query, index, locale), [query, index, locale]);
   const grouped = React.useMemo(() => groupByCheatsheet(filtered), [filtered]);
 
   function handleSelect(item: FlatSnippetIndexItem) {
@@ -33,17 +36,17 @@ export function CommandPalette({ index }: { index: FlatSnippetIndexItem[] }) {
     <CommandDialog
       open={open}
       onOpenChange={setOpen}
-      title="Tìm kiếm cheat sheet"
-      description="Gõ từ khoá để tìm snippet trong toàn bộ cheat sheet"
+      title={pick(UI_TEXT.commandPaletteTitle, locale)}
+      description={pick(UI_TEXT.commandPaletteDescription, locale)}
     >
       <Command shouldFilter={false}>
         <CommandInput
-          placeholder="Tìm snippet, cheat sheet..."
+          placeholder={pick(UI_TEXT.commandInputPlaceholder, locale)}
           value={query}
           onValueChange={setQuery}
         />
         <CommandList>
-          <CommandEmpty>Không tìm thấy kết quả. Thử duyệt theo danh mục ở sidebar.</CommandEmpty>
+          <CommandEmpty>{pick(UI_TEXT.commandEmpty, locale)}</CommandEmpty>
           {[...grouped.entries()].map(([cheatsheetTitle, items]) => (
             <CommandGroup key={cheatsheetTitle} heading={cheatsheetTitle}>
               {items.map((item) => (
@@ -52,9 +55,9 @@ export function CommandPalette({ index }: { index: FlatSnippetIndexItem[] }) {
                   value={`${item.cheatsheetSlug}-${item.snippetId}`}
                   onSelect={() => handleSelect(item)}
                 >
-                  <span>{item.snippetTitle}</span>
+                  <span>{pick(item.snippetTitle, locale)}</span>
                   <span className="ml-2 text-xs text-muted-foreground">
-                    {item.sectionTitle}
+                    {pick(item.sectionTitle, locale)}
                   </span>
                 </CommandItem>
               ))}

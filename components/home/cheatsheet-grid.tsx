@@ -1,3 +1,5 @@
+"use client";
+
 import { CheatsheetCard } from "@/components/home/cheatsheet-card";
 import { ComingSoonCard } from "@/components/home/coming-soon-card";
 import type { CategoryWithCheatsheets } from "@/content/registry";
@@ -31,7 +33,7 @@ export function CheatsheetGrid({ categories }: { categories: CategoryWithCheatsh
           ) : (
             <ComingSoonCard
               key={cheatsheet.slug}
-              label={cheatsheet.title}
+              label={{ vi: cheatsheet.title, en: cheatsheet.title }}
               categoryLabel={category.label}
             />
           ),
