@@ -3,6 +3,7 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import {
+  Command,
   CommandDialog,
   CommandInput,
   CommandList,
@@ -35,30 +36,32 @@ export function CommandPalette({ index }: { index: FlatSnippetIndexItem[] }) {
       title="Tìm kiếm cheat sheet"
       description="Gõ từ khoá để tìm snippet trong toàn bộ cheat sheet"
     >
-      <CommandInput
-        placeholder="Tìm snippet, cheat sheet..."
-        value={query}
-        onValueChange={setQuery}
-      />
-      <CommandList>
-        <CommandEmpty>Không tìm thấy kết quả. Thử duyệt theo danh mục ở sidebar.</CommandEmpty>
-        {[...grouped.entries()].map(([cheatsheetTitle, items]) => (
-          <CommandGroup key={cheatsheetTitle} heading={cheatsheetTitle}>
-            {items.map((item) => (
-              <CommandItem
-                key={`${item.cheatsheetSlug}-${item.snippetId}`}
-                value={`${item.cheatsheetTitle} ${item.snippetTitle} ${item.sectionTitle}`}
-                onSelect={() => handleSelect(item)}
-              >
-                <span>{item.snippetTitle}</span>
-                <span className="ml-2 text-xs text-muted-foreground">
-                  {item.sectionTitle}
-                </span>
-              </CommandItem>
-            ))}
-          </CommandGroup>
-        ))}
-      </CommandList>
+      <Command shouldFilter={false}>
+        <CommandInput
+          placeholder="Tìm snippet, cheat sheet..."
+          value={query}
+          onValueChange={setQuery}
+        />
+        <CommandList>
+          <CommandEmpty>Không tìm thấy kết quả. Thử duyệt theo danh mục ở sidebar.</CommandEmpty>
+          {[...grouped.entries()].map(([cheatsheetTitle, items]) => (
+            <CommandGroup key={cheatsheetTitle} heading={cheatsheetTitle}>
+              {items.map((item) => (
+                <CommandItem
+                  key={`${item.cheatsheetSlug}-${item.snippetId}`}
+                  value={`${item.cheatsheetSlug}-${item.snippetId}`}
+                  onSelect={() => handleSelect(item)}
+                >
+                  <span>{item.snippetTitle}</span>
+                  <span className="ml-2 text-xs text-muted-foreground">
+                    {item.sectionTitle}
+                  </span>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          ))}
+        </CommandList>
+      </Command>
     </CommandDialog>
   );
 }
