@@ -2,6 +2,16 @@
 
 Cheat sheet lập trình tra cứu nhanh, giao diện lấy cảm hứng từ code editor — dark mode mặc định, hỗ trợ song ngữ Việt/Anh và tìm kiếm tức thì qua command palette.
 
+## Screenshots
+
+| Dark mode | Light mode |
+|---|---|
+| ![Trang chủ - dark mode](.github/screenshots/home-dark.png) | ![Trang chủ - light mode](.github/screenshots/home-light.png) |
+
+**Trang chi tiết cheat sheet:**
+
+![Trang chi tiết JavaScript](.github/screenshots/detail-dark.png)
+
 ## Tính năng
 
 - **20 cheat sheet**: JavaScript, TypeScript, Python, Go, Rust, Java, PHP, HTML, CSS, React, Vue, Node.js, SQL, MongoDB, Docker, Kubernetes, Bash, Git, Markdown, Regex
