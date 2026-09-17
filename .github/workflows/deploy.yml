@@ -58,7 +58,6 @@ jobs:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_SSH_KEY }}
-          port: ${{ secrets.DEPLOY_PORT }}
           source: "docker-compose.yml,deploy.sh"
           target: "~/dev-cheatsheet-hub"
 
@@ -68,7 +67,6 @@ jobs:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_SSH_KEY }}
-          port: ${{ secrets.DEPLOY_PORT }}
           envs: GHCR_USER,GHCR_TOKEN
           script: |
             chmod +x ~/dev-cheatsheet-hub/deploy.sh
