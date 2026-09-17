@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Dev Cheatsheet Hub
 
-## Getting Started
+Trang tra cứu cheat sheet lập trình nhanh — phong cách "editor tối màu" (dark editor), hỗ trợ song ngữ Việt/Anh, tìm kiếm nhanh bằng command palette.
 
-First, run the development server:
+🔗 Demo local: `npm run dev` → `http://localhost:3000`
+
+## Tính năng
+
+- **20 cheat sheet gốc**, tự viết (không copy từ nguồn khác): JavaScript, TypeScript, Python, Go, Rust, Java, PHP, HTML, CSS, React, Vue, Node.js, SQL, MongoDB, Docker, Kubernetes, Bash, Git, Markdown, Regex
+- **Song ngữ Việt/Anh** — toggle ở header, không đổi URL, lưu lựa chọn vào `localStorage`
+- **Dark/Light theme** — mặc định tối, chống flash (FOUC) bằng inline script
+- **Command palette (⌘K / Ctrl+K)** — tìm nhanh theo tên snippet, cheat sheet, mô tả
+- **Copy code 1 chạm** trên mỗi snippet, có syntax highlight (shiki)
+- **Sidebar điều hướng theo danh mục**: Ngôn ngữ, Frontend, Backend, Database, DevOps, Công cụ
+- Site tĩnh hoàn toàn (SSG) — không backend, không database
+
+## Tech stack
+
+- [Next.js 16](https://nextjs.org) (App Router, Turbopack)
+- [TypeScript](https://www.typescriptlang.org)
+- [Tailwind CSS v4](https://tailwindcss.com)
+- [shadcn/ui](https://ui.shadcn.com) (dựa trên [Base UI](https://base-ui.com))
+- [Zod](https://zod.dev) — validate schema nội dung
+- [Shiki](https://shiki.style) — syntax highlighting
+- [cmdk](https://cmdk.paco.me) — command palette
+- [Vitest](https://vitest.dev) + Testing Library
+
+## Bắt đầu
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Mở [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Script khác
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build   # build production
+npm run start   # chạy bản build
+npm run lint    # eslint
+npm test        # chạy test (vitest)
+```
 
-## Learn More
+## Cấu trúc dự án
 
-To learn more about Next.js, take a look at the following resources:
+```
+app/                    # Next.js App Router (route + layout)
+components/             # UI components (layout, home, cheatsheet, ui/ shadcn)
+content/
+  schema.ts             # Zod schema cho cheat sheet (song ngữ {vi, en})
+  categories.ts          # Danh mục cố định (Ngôn ngữ, Frontend, ...)
+  cheatsheets/*.ts       # Nội dung từng cheat sheet
+  registry.ts            # Loader: validate + truy vấn nội dung
+lib/
+  i18n.ts               # Dictionary UI song ngữ
+  search.ts             # Logic filter cho command palette
+  highlight.ts          # Wrapper shiki
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Thêm cheat sheet mới
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Tạo file mới trong `content/cheatsheets/`, export 1 object đúng `Cheatsheet` schema (`content/schema.ts`), `title`/`description` của section & snippet là `{ vi, en }`.
+2. Import + thêm vào mảng `RAW_CHEATSHEETS` trong `content/registry.ts`.
+3. Nếu category chưa tồn tại, thêm vào `content/categories.ts`.
 
-## Deploy on Vercel
+Không cần sửa code UI — trang chủ, sidebar, command palette tự động nhận nội dung mới.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## License
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Nội dung cheat sheet là tự viết, dùng cho mục đích cá nhân/học tập.
