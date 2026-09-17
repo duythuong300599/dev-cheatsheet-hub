@@ -48,15 +48,12 @@ jobs:
   deploy:
     needs: build-and-push
     runs-on: ubuntu-latest
-    env:
-      TUNNEL_SERVICE_TOKEN_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
-      TUNNEL_SERVICE_TOKEN_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
     steps:
       - uses: actions/checkout@v4
 
-      # Server nằm sau Cloudflare Access — cần cloudflared làm ProxyCommand,
-      # xác thực bằng Service Token thay vì cho phép theo IP (IP của GitHub
-      # Actions đổi liên tục, không thể allowlist).
+      # Server không có IP public (double-NAT), chỉ lộ ra qua Cloudflare
+      # Tunnel — client phải dùng cloudflared để nói đúng giao thức Tunnel
+      # thay vì kết nối TCP thường tới port 22.
       - name: Install cloudflared
         run: |
           curl -fsSL -o cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
