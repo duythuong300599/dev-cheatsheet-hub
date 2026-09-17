@@ -1,0 +1,11 @@
+node_modules
+.next
+.git
+.github
+.claude
+docs
+plans
+.env*
+npm-debug.log*
+*.md
+.DS_Store
