@@ -48,29 +48,41 @@ jobs:
   deploy:
     needs: build-and-push
     runs-on: ubuntu-latest
+    env:
+      TUNNEL_SERVICE_TOKEN_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
+      TUNNEL_SERVICE_TOKEN_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
     steps:
       - uses: actions/checkout@v4
 
+      # Server nằm sau Cloudflare Access — cần cloudflared làm ProxyCommand,
+      # xác thực bằng Service Token thay vì cho phép theo IP (IP của GitHub
+      # Actions đổi liên tục, không thể allowlist).
+      - name: Install cloudflared
+        run: |
+          curl -fsSL -o cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+          sudo dpkg -i cloudflared.deb
+
+      - name: Configure SSH via Cloudflare Access
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          cat >> ~/.ssh/config <<EOF
+          Host deploy-server
+            HostName ${{ secrets.DEPLOY_HOST }}
+            User ${{ secrets.DEPLOY_USER }}
+            IdentityFile ~/.ssh/deploy_key
+            ProxyCommand cloudflared access ssh --hostname %h
+            StrictHostKeyChecking no
+          EOF
+
       # Server chỉ cần 2 file này để chạy container — không cần clone toàn bộ source code.
       - name: Copy docker-compose.yml + deploy.sh to server
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USER }}
-          key: ${{ secrets.DEPLOY_SSH_KEY }}
-          source: "docker-compose.yml,deploy.sh"
-          target: "~/dev-cheatsheet-hub"
+        run: scp docker-compose.yml deploy.sh deploy-server:~/dev-cheatsheet-hub/
 
       - name: Run deploy.sh on server
-        uses: appleboy/ssh-action@v1.2.0
-        with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USER }}
-          key: ${{ secrets.DEPLOY_SSH_KEY }}
-          envs: GHCR_USER,GHCR_TOKEN
-          script: |
-            chmod +x ~/dev-cheatsheet-hub/deploy.sh
-            bash ~/dev-cheatsheet-hub/deploy.sh
         env:
           GHCR_USER: ${{ github.actor }}
           GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ssh deploy-server "export GHCR_USER='$GHCR_USER' GHCR_TOKEN='$GHCR_TOKEN'; chmod +x ~/dev-cheatsheet-hub/deploy.sh; bash ~/dev-cheatsheet-hub/deploy.sh"
