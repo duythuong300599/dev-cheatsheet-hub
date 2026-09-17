@@ -49,7 +49,20 @@ jobs:
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy to server via SSH
+      - uses: actions/checkout@v4
+
+      # Server chỉ cần 2 file này để chạy container — không cần clone toàn bộ source code.
+      - name: Copy docker-compose.yml + deploy.sh to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          port: ${{ secrets.DEPLOY_PORT }}
+          source: "docker-compose.yml,deploy.sh"
+          target: "~/dev-cheatsheet-hub"
+
+      - name: Run deploy.sh on server
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.DEPLOY_HOST }}
@@ -58,7 +71,7 @@ jobs:
           port: ${{ secrets.DEPLOY_PORT }}
           envs: GHCR_USER,GHCR_TOKEN
           script: |
-            cd ~/dev-cheatsheet-hub && git pull --ff-only
+            chmod +x ~/dev-cheatsheet-hub/deploy.sh
             bash ~/dev-cheatsheet-hub/deploy.sh
         env:
           GHCR_USER: ${{ github.actor }}
